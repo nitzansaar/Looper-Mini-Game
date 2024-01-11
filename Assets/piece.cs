@@ -29,6 +29,7 @@ public class piece : MonoBehaviour
     {
         gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         // Debug.Log("Piece class starting");
+        gm.dynamic.GetComponent<TMP_Text>().text = gm.originalThoughtArray[gm.index];
     }
 
 
@@ -52,77 +53,93 @@ public class piece : MonoBehaviour
 
         updateScore();
 
+        gm.scoreboard.GetComponent<TMP_Text>().text = (gm.puzzle.winValue - gm.puzzle.currValue).ToString();
+        // Debug.Log("difference: " + (gm.puzzle.winValue - gm.puzzle.currValue));
+
 
         if (gm.puzzle.currValue == gm.puzzle.winValue)
         {
-            // Debug.Log(gm.thoughtArray[gm.thoughtArray.Length - 1]);
             gm.Win();
         }
         else
         {
-            // Check if the current score increased by one
             if (gm.puzzle.currValue == previousScore + 1)
             {
-                // Ensure index is within bounds before accessing thoughtArray
-                if (gm.index >= 0 && gm.index < gm.thoughtArray.Length)
-                {
-                    gm.originalSentence = gm.originalThoughtArray[gm.index];
-                    gm.revisedSentence += gm.thoughtArray[gm.index] + " ";
-                    // Debug.Log(gm.revisedSentence.GetComponent<TMP_Text>().text + " " + gm.originalSentence.GetComponent<TMP_Text>().text);
-                    // gm.dynamic.GetComponent<TMP_Text>().text = gm.eventText.GetComponent<TMP_Text>().text + " " + gm.originalSentence.GetComponent<TMP_Text>().text;
-                    // Debug.Log(gm.originalSentence.GetComponent<TMP_Text>().text + " " + gm.revisedSentence.GetComponent<TMP_Text>().text);
-                    gm.dynamic.GetComponent<TMP_Text>().text = gm.originalSentence + " " + gm.revisedSentence;
-                    gm.index++;
-
-
-                }
+                updateTextBox(1, true);
             }
             else if (gm.puzzle.currValue == previousScore - 1)
             {
-                // Ensure index is within bounds before accessing thoughtArray
-                if (gm.index > 0 && gm.index <= gm.thoughtArray.Length)
-                {
+                updateTextBox(0, false);
+            }
+            else if (gm.puzzle.currValue == previousScore + 2)
+            {
 
-                    // Get the current text from eventText
-                    string currentText = gm.revisedSentence;
-
-
-                    // Get the length of the string to be removed
-                    int lengthToRemove = gm.thoughtArray[gm.index - 1].Length + 1; // Add 1 for the space
-
-
-                    // Check if the current text contains the string to be removed
-                    if (currentText.Contains(gm.thoughtArray[gm.index - 1]))
-                    {
-                        // Remove the string from the current text
-                        currentText = currentText.Remove(currentText.LastIndexOf(gm.thoughtArray[gm.index - 1]), lengthToRemove);
-                    }
-
-
-                    // Update the eventText with the modified string
-                    gm.revisedSentence = currentText;
-
-
-                    // Ensure index is within bounds before accessing originalThoughtArray
-                    if (gm.index > 0 && gm.index < gm.originalThoughtArray.Length)
-                    {
-                        gm.originalSentence = gm.originalThoughtArray[--gm.index];
-                    }
-                    else
-                    {
-                        gm.originalSentence = "";
-                    }
-                    // Debug.Log(gm.originalSentence.GetComponent<TMP_Text>().text + " " + gm.revisedSentence.GetComponent<TMP_Text>().text);
-                    gm.dynamic.GetComponent<TMP_Text>().text = gm.originalSentence + " " + gm.revisedSentence;
-
-                }
+                updateTextBox(2, true);
+            }
+            else if (gm.puzzle.currValue == previousScore + 3)
+            {
+                updateTextBox(3, true);
+            }
+            else if (gm.puzzle.currValue == previousScore + 4)
+            {
+                updateTextBox(4, true);
             }
         }
     }
 
 
 
+    void updateTextBox(int incrementValue, bool increase)
+    {
+        if (increase)
+        {
+            if (gm.index >= 0 && gm.index < gm.thoughtArray.Length)
+            {
+                while (incrementValue > 0)
+                {
+                    gm.originalSentence = gm.originalThoughtArray[gm.index];
+                    gm.revisedSentence += gm.thoughtArray[gm.index] + " ";
+                    gm.dynamic.GetComponent<TMP_Text>().text = gm.originalSentence + " " + gm.revisedSentence;
+                    gm.index++;
+                    incrementValue--;
+                }
 
+            }
+        }
+        else
+        {
+            // Ensure index is within bounds before accessing thoughtArray
+            if (gm.index > 0 && gm.index <= gm.thoughtArray.Length)
+            {
+
+                // Get the current text from eventText
+                string currentText = gm.revisedSentence;
+                // Get the length of the string to be removed
+                int lengthToRemove = gm.thoughtArray[gm.index - 1].Length + 1; // Add 1 for the space
+                                                                               // Check if the current text contains the string to be removed
+                if (currentText.Contains(gm.thoughtArray[gm.index - 1]))
+                {
+                    // Remove the string from the current text
+                    currentText = currentText.Remove(currentText.LastIndexOf(gm.thoughtArray[gm.index - 1]), lengthToRemove);
+                }
+                // Update the eventText with the modified string
+                gm.revisedSentence = currentText;
+                // Ensure index is within bounds before accessing originalThoughtArray
+                if (gm.index > 0 && gm.index < gm.originalThoughtArray.Length)
+                {
+                    gm.originalSentence = gm.originalThoughtArray[--gm.index];
+                }
+                else
+                {
+                    gm.originalSentence = "";
+                }
+                // Debug.Log(gm.originalSentence.GetComponent<TMP_Text>().text + " " + gm.revisedSentence.GetComponent<TMP_Text>().text);
+                gm.dynamic.GetComponent<TMP_Text>().text = gm.originalSentence + " " + gm.revisedSentence;
+
+            }
+        }
+
+    }
 
 
 
