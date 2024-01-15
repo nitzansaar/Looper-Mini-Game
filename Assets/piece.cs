@@ -20,7 +20,6 @@ public class piece : MonoBehaviour
     // public string original;
     // public string revised = "";
 
-
     public GameManager gm;
 
 
@@ -30,6 +29,7 @@ public class piece : MonoBehaviour
         gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         // Debug.Log("Piece class starting");
         gm.dynamic.GetComponent<TMP_Text>().text = gm.originalThoughtArray[gm.index];
+        gm.scoreboard.GetComponent<TMP_Text>().text = gm.total_score.ToString();
     }
 
 
@@ -52,8 +52,7 @@ public class piece : MonoBehaviour
 
 
         updateScore();
-
-        gm.scoreboard.GetComponent<TMP_Text>().text = (gm.puzzle.winValue - gm.puzzle.currValue).ToString();
+        int change_of_score = 0;
         // Debug.Log("difference: " + (gm.puzzle.winValue - gm.puzzle.currValue));
 
 
@@ -65,26 +64,33 @@ public class piece : MonoBehaviour
         {
             if (gm.puzzle.currValue == previousScore + 1)
             {
+                change_of_score = 10;
                 updateTextBox(1, true);
-            }
-            else if (gm.puzzle.currValue == previousScore - 1)
-            {
-                updateTextBox(0, false);
             }
             else if (gm.puzzle.currValue == previousScore + 2)
             {
-
+                change_of_score = 20;
                 updateTextBox(2, true);
             }
             else if (gm.puzzle.currValue == previousScore + 3)
             {
+                change_of_score = 30;
                 updateTextBox(3, true);
             }
             else if (gm.puzzle.currValue == previousScore + 4)
             {
+                change_of_score = 40;
                 updateTextBox(4, true);
             }
+            else if (gm.puzzle.currValue == previousScore - 1)
+            {
+                gm.total_score -= 10;
+                updateTextBox(0, false);
+            }
+            gm.scoreboard.GetComponent<TMP_Text>().text = (gm.total_score + change_of_score).ToString();
+
         }
+
     }
 
 
@@ -146,18 +152,25 @@ public class piece : MonoBehaviour
 
     private void updateScore()
     {
+        int prevCurrValue = gm.puzzle.currValue;
         int difference = -gm.QuickSweep((int)transform.position.x, (int)transform.position.y);
+
         if (gm.allowRotation)
         {
             RotatePiece();
         }
+
         difference += gm.QuickSweep((int)transform.position.x, (int)transform.position.y);
-
-
         gm.puzzle.currValue += difference;
 
+        int currValueChange = gm.puzzle.currValue - prevCurrValue;
+        if (currValueChange > 0)
+        {
+            gm.total_score += currValueChange * 10;
+        }
 
-        // Debug.Log(incrementValue);
+        // Update the scoreboard text
+        gm.scoreboard.GetComponent<TMP_Text>().text = gm.total_score.ToString();
     }
 
 
@@ -188,9 +201,6 @@ public class piece : MonoBehaviour
         if (values.Length != 0)
         {
             int aux = values[0];
-
-
-
 
             for (int i = 0; i < 3; i++)
             {

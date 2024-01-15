@@ -12,6 +12,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public GameObject dynamic;
+    public GameObject scoreboard;
     public string originalSentence;
     public string originalText;
     public string[] originalThoughtArray;
@@ -21,14 +22,9 @@ public class GameManager : MonoBehaviour
     public string winnersText;
     public string[] thoughtArray;
     public bool allowRotation;
-
-
-
+    public int total_score;
     public int index;
     // public string displayText;
-
-
-
 
     [System.Serializable]
     public class Puzzle
@@ -56,7 +52,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
 
-
+        total_score = 0;
+        scoreboard.GetComponent<TMP_Text>().text = total_score.ToString();
         // Debug.Log("GameManager Start method is being executed.");
         allowRotation = true;
 
