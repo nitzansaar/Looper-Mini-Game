@@ -86,15 +86,10 @@ public class GameManager : MonoBehaviour
 
         puzzle.currValue = Sweep();
 
+        int numParts = Mathf.Max(1, puzzle.winValue - puzzle.currValue);
 
-        thoughtArray = GenerateThoughtArray(winnersText, puzzle.winValue, puzzle.currValue);
-        // thoughtArray = DivideString(winnersText, puzzle.winValue - puzzle.currValue);  
-        originalThoughtArray = GenerateOriginalThoughtArray(originalText, puzzle.winValue, puzzle.currValue);
-
-
-
-
-
+        thoughtArray = GenerateThoughtArray(winnersText, numParts);
+        originalThoughtArray = GenerateOriginalThoughtArray(originalText, numParts);
 
 
     }
@@ -114,10 +109,6 @@ public class GameManager : MonoBehaviour
     }
     public void GeneratePuzzle()
     {
-        // Instantiate words at the same locations as the pieces
-        // Split the string at each comma to get an array of thoughts
-
-
         string[] thoughts = levels[thoughtsIndex];
         if (thoughtsIndex >= thoughts.Length)
         {
@@ -140,16 +131,6 @@ public class GameManager : MonoBehaviour
             originalText = thoughts[0];
             winnersText = thoughts[1];
         }
-
-
-        // Debug.Log(originalText);
-        // Debug.Log(winnersText);
-
-
-
-
-        // int wordindex = 0;
-
 
         puzzle.pieces = new piece[puzzle.width, puzzle.height];
 
@@ -226,37 +207,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // public string[] DivideString(string s, int i)
-    // {
-    //     if (i <= 0)
-    //     {
-    //         Debug.LogError("The size must be greater than 0.");
-    //     }
-
-    //     // Calculate the size of each part
-    //     int partSize = (int)Mathf.Ceiling((double)s.Length / i);
-    //     string[] result = new string[i];
-
-    //     for (int j = 0; j < i; j++)
-    //     {
-    //         int start = j * partSize;
-    //         if (start < s.Length)
-    //         {
-    //             int end = Mathf.Min(start + partSize, s.Length);
-    //             result[j] = s.Substring(start, end - start);
-    //         }
-    //         else
-    //         {
-    //             result[j] = string.Empty; // Fill the remaining array with empty strings if s is shorter than expected
-    //         }
-    //     }
-
-    //     return result;
-    // }
-    private string[] GenerateThoughtArray(string currentThought, int winValue, int currValue)
+    private string[] GenerateThoughtArray(string currentThought, int numParts)
     {
-        int numParts = Mathf.Max(1, winValue - currValue);
-
         string[] words = currentThought.Split(' ');
         if (words.Length < numParts)
         {
@@ -282,16 +234,8 @@ public class GameManager : MonoBehaviour
 
 
 
-    private string[] GenerateOriginalThoughtArray(string currentThought, int winValue, int currValue)
+    private string[] GenerateOriginalThoughtArray(string currentThought, int numParts)
     {
-        if (currValue == 0)
-        {
-            // Debug.LogError("Error: currValue is zero in GenerateOriginalThoughtArray method.");
-            return new string[] { currentThought }; // Return the whole thought as a single part
-        }
-
-
-        int numParts = Mathf.Max(1, winValue - currValue); // Ensure numParts is at least 1
 
 
         string[] thoughtParts = new string[numParts];
@@ -315,14 +259,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-
-
-
-
-
-
-
-
     int getWinValue()
     {
         int winValue = 0;
@@ -339,7 +275,6 @@ public class GameManager : MonoBehaviour
         winValue /= 2;
         return winValue;
     }
-
 
 
 
@@ -366,14 +301,8 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-
-
-
         }
         return value;
-
-
-
 
     }
 
@@ -424,9 +353,7 @@ public class GameManager : MonoBehaviour
     public void Win()
     {
         winCanvas.SetActive(true);
-        // revisedSentence.SetActive(false);
         dynamic.GetComponent<TMP_Text>().text = winnersText;
-        // originalSentence.SetActive(false);
         allowRotation = false;
     }
 
@@ -475,14 +402,8 @@ public class GameManager : MonoBehaviour
                 aux.y = p.transform.position.y;
         }
 
-
-
-
         aux.x++;
         aux.y++;
-
-
-
 
         return aux;
     }

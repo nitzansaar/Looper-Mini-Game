@@ -50,11 +50,7 @@ public class piece : MonoBehaviour
         // Get the current score before the update
         int previousScore = gm.puzzle.currValue;
 
-
         updateScore();
-        int change_of_score = 0;
-        // Debug.Log("difference: " + (gm.puzzle.winValue - gm.puzzle.currValue));
-
 
         if (gm.puzzle.currValue == gm.puzzle.winValue)
         {
@@ -64,30 +60,25 @@ public class piece : MonoBehaviour
         {
             if (gm.puzzle.currValue == previousScore + 1)
             {
-                change_of_score = 10;
+                gm.total_score += 10;
                 updateTextBox(1, true);
             }
             else if (gm.puzzle.currValue == previousScore + 2)
             {
-                change_of_score = 20;
+                gm.total_score += 20;
                 updateTextBox(2, true);
             }
             else if (gm.puzzle.currValue == previousScore + 3)
             {
-                change_of_score = 30;
+                gm.total_score += 30;
                 updateTextBox(3, true);
-            }
-            else if (gm.puzzle.currValue == previousScore + 4)
-            {
-                change_of_score = 40;
-                updateTextBox(4, true);
             }
             else if (gm.puzzle.currValue == previousScore - 1)
             {
                 gm.total_score -= 10;
                 updateTextBox(0, false);
             }
-            gm.scoreboard.GetComponent<TMP_Text>().text = (gm.total_score + change_of_score).ToString();
+            gm.scoreboard.GetComponent<TMP_Text>().text = gm.total_score.ToString();
 
         }
 
@@ -105,8 +96,11 @@ public class piece : MonoBehaviour
                 {
                     gm.originalSentence = gm.originalThoughtArray[gm.index];
                     gm.revisedSentence += gm.thoughtArray[gm.index] + " ";
-                    gm.dynamic.GetComponent<TMP_Text>().text = gm.originalSentence + " " + gm.revisedSentence;
-                    gm.index++;
+                    if (gm.index != gm.thoughtArray.Length - 1)
+                    {
+                        gm.dynamic.GetComponent<TMP_Text>().text = gm.revisedSentence + " " + gm.originalSentence;
+                        gm.index++;
+                    }
                     incrementValue--;
                 }
 
@@ -117,12 +111,9 @@ public class piece : MonoBehaviour
             // Ensure index is within bounds before accessing thoughtArray
             if (gm.index > 0 && gm.index <= gm.thoughtArray.Length)
             {
-
-                // Get the current text from eventText
                 string currentText = gm.revisedSentence;
-                // Get the length of the string to be removed
                 int lengthToRemove = gm.thoughtArray[gm.index - 1].Length + 1; // Add 1 for the space
-                                                                               // Check if the current text contains the string to be removed
+
                 if (currentText.Contains(gm.thoughtArray[gm.index - 1]))
                 {
                     // Remove the string from the current text
@@ -140,7 +131,8 @@ public class piece : MonoBehaviour
                     gm.originalSentence = "";
                 }
                 // Debug.Log(gm.originalSentence.GetComponent<TMP_Text>().text + " " + gm.revisedSentence.GetComponent<TMP_Text>().text);
-                gm.dynamic.GetComponent<TMP_Text>().text = gm.originalSentence + " " + gm.revisedSentence;
+                if (gm.index != gm.thoughtArray.Length - 1)
+                    gm.dynamic.GetComponent<TMP_Text>().text = gm.revisedSentence + " " + gm.originalSentence;
 
             }
         }
@@ -181,15 +173,8 @@ public class piece : MonoBehaviour
     {
         realRotation += 90;
 
-
-
-
         if (realRotation == 360)
             realRotation = 0;
-
-
-
-
         RotateValues();
     }
 
