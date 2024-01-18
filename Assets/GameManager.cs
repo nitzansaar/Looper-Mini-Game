@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+// using System;
 
 
 
@@ -87,31 +88,9 @@ public class GameManager : MonoBehaviour
 
 
         thoughtArray = GenerateThoughtArray(winnersText, puzzle.winValue, puzzle.currValue);
+        // thoughtArray = DivideString(winnersText, puzzle.winValue - puzzle.currValue);  
         originalThoughtArray = GenerateOriginalThoughtArray(originalText, puzzle.winValue, puzzle.currValue);
 
-
-
-
-        // originalSentence.GetComponent<TMP_Text>().text = originalThoughtArray[0];
-        // Debug.Log("the following is the swag array: ");
-        // foreach (var text in swagArray)
-        // {
-        //     Debug.Log("test: " + text);
-        // }
-        // Debug.Log(originalThoughtArray.Length);
-        // foreach (var text in thoughtArray)
-        // {
-        //     Debug.Log("test: " + text);
-        // }
-        // Debug.Log(originalThoughtArray.Length);
-        // originalSentence.SetActive(true);
-
-
-
-
-
-
-        // Debug.Log("These numbers should be the same: " + thoughtArray.Length + " " + originalThoughtArray.Length);
 
 
 
@@ -246,37 +225,61 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    // public string[] DivideString(string s, int i)
+    // {
+    //     if (i <= 0)
+    //     {
+    //         Debug.LogError("The size must be greater than 0.");
+    //     }
+
+    //     // Calculate the size of each part
+    //     int partSize = (int)Mathf.Ceiling((double)s.Length / i);
+    //     string[] result = new string[i];
+
+    //     for (int j = 0; j < i; j++)
+    //     {
+    //         int start = j * partSize;
+    //         if (start < s.Length)
+    //         {
+    //             int end = Mathf.Min(start + partSize, s.Length);
+    //             result[j] = s.Substring(start, end - start);
+    //         }
+    //         else
+    //         {
+    //             result[j] = string.Empty; // Fill the remaining array with empty strings if s is shorter than expected
+    //         }
+    //     }
+
+    //     return result;
+    // }
     private string[] GenerateThoughtArray(string currentThought, int winValue, int currValue)
     {
-        if (currValue == 0)
+        int numParts = Mathf.Max(1, winValue - currValue);
+
+        string[] words = currentThought.Split(' ');
+        if (words.Length < numParts)
         {
-            // Debug.LogError("Error: currValue is zero in GenerateThoughtArray method.");
-            return new string[] { currentThought }; // Return the whole thought as a single part
+            numParts = words.Length; // Adjust numParts if there are fewer words than parts
         }
-
-
-        int numParts = Mathf.Max(1, winValue - currValue); // Ensure numParts is at least 1
-
 
         string[] thoughtParts = new string[numParts];
 
-
-        string[] words = currentThought.Split(' ');
-
-
         int wordsPerPart = words.Length / numParts;
+        int extraWords = words.Length % numParts;
 
-
+        int startIndex = 0;
         for (int i = 0; i < numParts; i++)
         {
-            int startIndex = i * wordsPerPart;
-            int endIndex = (i == numParts - 1) ? words.Length : startIndex + wordsPerPart;
-            thoughtParts[i] = string.Join(" ", words, startIndex, endIndex - startIndex);
+            int length = wordsPerPart + (extraWords > 0 ? 1 : 0);
+            thoughtParts[i] = string.Join(" ", words, startIndex, length);
+            startIndex += length;
+            extraWords--;
         }
-
 
         return thoughtParts;
     }
+
 
 
     private string[] GenerateOriginalThoughtArray(string currentThought, int winValue, int currValue)
