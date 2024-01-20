@@ -94,10 +94,10 @@ public class piece : MonoBehaviour
             {
                 while (incrementValue > 0)
                 {
-                    gm.originalSentence = gm.originalThoughtArray[gm.index];
-                    gm.revisedSentence += gm.thoughtArray[gm.index] + " ";
                     if (gm.index != gm.thoughtArray.Length - 1)
                     {
+                        gm.originalSentence = gm.originalThoughtArray[gm.index];
+                        gm.revisedSentence += gm.thoughtArray[gm.index] + " ";
                         gm.dynamic.GetComponent<TMP_Text>().text = gm.revisedSentence + " " + gm.originalSentence;
                         gm.index++;
                     }
